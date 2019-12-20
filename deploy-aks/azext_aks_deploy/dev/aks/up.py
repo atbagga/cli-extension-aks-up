@@ -76,7 +76,8 @@ def aks_deploy(aks_cluster=None, acr=None, repository=None, skip_secrets_generat
     print('')
     if not do_not_wait:
         poll_workflow_status(repo_name,check_run_id)
-        deployment_ip, port = get_deployment_IP_port(APP_NAME_DEFAULT)
+        language = choose_supported_language(languages)
+        deployment_ip, port = get_deployment_IP_port(language.lower()+APP_NAME_DEFAULT)
         print('Your app is deployed at :http://{ip}:{port}'.format(ip=deployment_ip,port=port))
     return
 
@@ -120,6 +121,7 @@ def poll_workflow_status(repo_name,check_run_id):
 def get_yaml_template_for_repo(languages, cluster_details, acr_details, repo_name):
     language = choose_supported_language(languages)
     if language:
+        languae_app_name = language.lower() + APP_NAME_DEFAULT
         logger.warning('%s repository detected.', language)
         files_to_return = []
         # Read template file
@@ -127,16 +129,16 @@ def get_yaml_template_for_repo(languages, cluster_details, acr_details, repo_nam
         
         files_to_return.append(Files(path='manifests/service.yml',
             content=SERVICE_MANIFEST
-                .replace(APP_NAME_PLACEHOLDER, APP_NAME_DEFAULT)
+                .replace(APP_NAME_PLACEHOLDER, languae_app_name)
                 .replace(PORT_NUMBER_PLACEHOLDER, PORT_NUMBER_DEFAULT)))
         files_to_return.append(Files(path='manifests/deployment.yml',
             content=DEPLOYMENT_MANIFEST
-                .replace(APP_NAME_PLACEHOLDER, APP_NAME_DEFAULT)
+                .replace(APP_NAME_PLACEHOLDER, languae_app_name)
                 .replace(ACR_PLACEHOLDER, acr_details['name'])
                 .replace(PORT_NUMBER_PLACEHOLDER, PORT_NUMBER_DEFAULT)))
         files_to_return.append(Files(path='.github/workflows/main.yml',
             content=DEPLOY_TO_AKS_TEMPLATE
-                .replace(APP_NAME_PLACEHOLDER, APP_NAME_DEFAULT)
+                .replace(APP_NAME_PLACEHOLDER, languae_app_name)
                 .replace(ACR_PLACEHOLDER, acr_details['name'])
                 .replace(CLUSTER_PLACEHOLDER, cluster_details['name'])
                 .replace(RG_PLACEHOLDER, cluster_details['resourceGroup'])))
