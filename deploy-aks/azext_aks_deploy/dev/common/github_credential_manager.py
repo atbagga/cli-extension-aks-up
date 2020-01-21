@@ -10,7 +10,7 @@ from knack.log import get_logger
 from knack.util import CLIError
 from azext_aks_deploy.dev.common.utils import time_now_as_string, singleton
 
-AKS_UP_GITHUB_PAT_ENVKEY = "GITHUB_PAT"
+AKS_APP_UP_GITHUB_PAT_ENVKEY = "GITHUB_PAT"
 
 logger = get_logger(__name__)
 
@@ -28,7 +28,7 @@ class GithubCredentialManager():
         logger.warning('We need to create a Personal Access Token to communicate with GitHub. '
                        'A new PAT will be created with scopes - admin:repo_hook, repo, user.')
         logger.warning('You can set the PAT in the environment variable (%s) to avoid getting prompted '
-                       'for username and password.', AKS_UP_GITHUB_PAT_ENVKEY)
+                       'for username and password.', AKS_APP_UP_GITHUB_PAT_ENVKEY)
         print('')
         self.username = prompt(msg='Enter your GitHub username (leave blank for using already generated PAT): ')
         if not self.username:
@@ -82,10 +82,10 @@ class GithubCredentialManager():
 
     def get_token(self, token_prefix, note=None, display_warning=False):
         import os
-        github_pat = os.getenv(AKS_UP_GITHUB_PAT_ENVKEY, None)
+        github_pat = os.getenv(AKS_APP_UP_GITHUB_PAT_ENVKEY, None)
         if github_pat:
             if display_warning:
-                logger.warning('Using GitHub PAT token found in environment variable (%s).', AKS_UP_GITHUB_PAT_ENVKEY)
+                logger.warning('Using GitHub PAT token found in environment variable (%s).', AKS_APP_UP_GITHUB_PAT_ENVKEY)
                 print('')
             return github_pat
         if not self.token:
