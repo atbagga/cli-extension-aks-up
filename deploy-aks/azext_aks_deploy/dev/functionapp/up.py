@@ -18,6 +18,7 @@ from azext_aks_deploy.dev.common.utils import get_repo_name_from_repo_url
 logger = get_logger(__name__)
 functionapp_token_prefix = "FunctionAppUpCLIExt_"
 
+
 def functionapp_deploy(repository=None, skip_secrets_generation=False, do_not_wait=False):
     """Build and Deploy to Azure FunctionApp via GitHub actions
     :param repository: GitHub repository URL e.g. https://github.com/azure/azure-cli.
