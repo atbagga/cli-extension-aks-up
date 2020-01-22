@@ -25,7 +25,7 @@ from azext_aks_deploy.dev.common.prompting import prompt_user_friendly_choice_li
 from azext_aks_deploy.dev.aks.docker_helm_template import get_docker_templates, get_helm_charts
 
 logger = get_logger(__name__)
-
+aks_token_prefix = "AksAppUpCLIExt_"
 
 # pylint: disable=too-many-statements
 def aks_deploy(aks_cluster=None, acr=None, repository=None, port=None, branch_name=None,
@@ -54,8 +54,8 @@ def aks_deploy(aks_cluster=None, acr=None, repository=None, port=None, branch_na
     if not repository:
         raise CLIError('The following arguments are required: --repository.')
     repo_name = get_repo_name_from_repo_url(repository)
-
-    get_github_pat_token(repo_name, display_warning=True)
+    
+    get_github_pat_token(token_prefix=aks_token_prefix + repo_name, display_warning=True)
     logger.warning('Setting up your workflow.')
     languages = get_languages_for_repo(repo_name)
     if not languages:
