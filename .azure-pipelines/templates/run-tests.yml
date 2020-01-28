@@ -19,7 +19,7 @@ steps:
 
   - template: setup-ci-machine.yml
 
-  - template: download-install-local-aks-deploy-extension.yml
+  - template: download-install-local-aks-deploy-cli-extension.yml
 
   - ${{ if eq(parameters.runOnlyRecordedTests, 'false') }}:
     - script: pytest --junitxml "TEST-results.xml"
